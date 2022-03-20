@@ -17,7 +17,7 @@
     <article class="box" v-for="note in notes" :key="note.id">
       <div class="box__header">
         <p>{{ note.timestamp }}</p>
-        <button type="button">X</button>
+        <button type="button" @click="onDelete(note.id)">X</button>
       </div>
       <div class="box__content">
         <p>{{ note.content }}</p>
@@ -48,8 +48,11 @@ export default {
         id: Math.random() * 1000,
         content: this.content,
         timestamp: new Date().toLocaleDateString(),
-      };m
-      this.notes.unshift(newNotes)
+      };
+      this.notes.unshift(newNotes);
+    },
+    onDelete(id) {
+      this.notes = this.notes.filter((note) => note.id !== id);
     },
   },
 };
