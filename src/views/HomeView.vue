@@ -16,7 +16,7 @@
 
     <article class="box" v-for="note in notes" :key="note.id">
       <div class="box__header">
-        <p>{{ note.timestamp }}</p>
+        <p>{{ note.datestamp }}, {{note.timestamp}}</p>
         <button type="button" @click="onDelete(note.id)">X</button>
       </div>
       <div class="box__content">
@@ -30,13 +30,13 @@
 export default {
   data() {
     return {
-      content: null,
       notes: [
         {
           id: Math.random() * 1000,
           content:
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc fermentum risus neque, vel dapibus libero scelerisque non. Nullam placerat pellentesque tellus a vehicula. Quisque",
-          timestamp: new Date().toLocaleDateString(),
+                  datestamp:  new Date().toLocaleDateString(),
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         },
       ],
     };
@@ -47,7 +47,8 @@ export default {
       const newNotes = {
         id: Math.random() * 1000,
         content: this.content,
-        timestamp: new Date().toLocaleDateString(),
+        datestamp:  new Date().toLocaleDateString(),
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       this.notes.unshift(newNotes);
     },
