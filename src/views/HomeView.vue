@@ -14,9 +14,9 @@
       </form>
     </main>
 
-    <article class="box" v-for="note in notes" :key="note.id">
+    <article class="box" v-for="note in notes" :key="note.id" @dblclick="toggleCard">
       <div class="box__header">
-        <p>{{ note.datestamp }}, {{note.timestamp}}</p>
+        <p><strong>{{ note.datestamp }}, {{note.timestamp}}</strong></p>
         <button type="button" @click="onDelete(note.id)">X</button>
       </div>
       <div class="box__content">
@@ -48,13 +48,21 @@ export default {
         id: Math.random() * 1000,
         content: this.content,
         datestamp:  new Date().toLocaleDateString(),
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+
       };
       this.notes.unshift(newNotes);
+      this.content = "";
     },
     onDelete(id) {
-      this.notes = this.notes.filter((note) => note.id !== id);
+     const result = confirm("Are you sure?")
+     if(result){
+       this.notes = this.notes.filter((note) => note.id !== id);
+     }
     },
+    toggleCard(){
+
+    }
   },
 };
 </script>
