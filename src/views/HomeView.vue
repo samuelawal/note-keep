@@ -2,20 +2,29 @@
   <section class="container">
     <main>
       <h1>Minimal Notes</h1>
-      <form name="add-notes-form" @submit.prevent>
+      <form name="add-notes-form" @submit.prevent="onSubmit">
         <textarea
           id="add-form-input"
           placeholder="Insert your note..."
+          v-model="content"
           rows="4"
+          required
         />
         <button type="submit">Submit</button>
       </form>
     </main>
 
-    <article class="box" v-for="index in numberOfNotes" :key="index">
+    <article
+      class="box"
+      v-for="note in notes"
+      :key="note.id"
+      @dblclick="toggleCard"
+    >
       <div class="box__header">
-        <p>{{ note.timestamp }}</p>
-        <button type="button">X</button>
+        <p>
+          <strong>{{ note.datestamp }}, {{ note.timestamp }}</strong>
+        </p>
+        <button type="button" @click="onDelete(note.id)">X</button>
       </div>
       <div class="box__content">
         <p>{{ note.content }}</p>
@@ -25,16 +34,42 @@
 </template>
 
 <script>
+  import { mapActions, mapGetters } from "vuex";
   export default {
     data() {
       return {
-        numberOfNotes: 12,
-        note: {
-          content:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc fermentum risus neque, vel dapibus libero scelerisque non. Nullam placerat pellentesque tellus a vehicula. Quisque ",
-          timestamp: new Date().toLocaleDateString(),
-        },
+        content: "",
       };
+    },
+
+    computed: {
+      ...mapGetters("notes", ["myNotes"]),
+      notes() {
+        return this.myNotes;
+      },
+    },
+    methods: {
+      ...mapActions("notes", ["addNotes", "deleteNote"]),
+      onSubmit() {
+        const newNotes = {
+          id: Math.random() * 1000,
+          content: this.content,
+          datestamp: new Date().toLocaleDateString(),
+          timestamp: new Date().toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        };
+        this.addNotes(newNotes);
+        this.content = "";
+      },
+      onDelete(id) {
+        const result = confirm("Are you sure?");
+        if (result) {
+          this.deleteNote(id);
+        }
+      },
+      toggleCard() {},
     },
   };
 </script>
@@ -52,7 +87,7 @@
     --mn-text-color: #000000;
     --mn-background-color: #ffffff;
     --mn-border: 1px solid #8d8e91;
-    --mb-border-focus: #333;
+    --mb-border-focus: #333333;
   }
 
   body {
@@ -73,7 +108,7 @@
   .container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-gap: 1rem;
   }
 
   form textarea {
